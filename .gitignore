@@ -5,6 +5,7 @@ EvoNAPS_credentials.cnf
 database/scripts
 test
 *.ipynb
+data
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
