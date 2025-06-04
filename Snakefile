@@ -32,8 +32,8 @@ difficulty score (source: https://github.com/tschuelia/PyPythia).
 Note, that the sequence type needs to be set manually. Declare the 
 sequence type with --config seq_type=[ DNA | AA ] from the command line. 
 
-Also note, that the flag --use-conda is neccessary because different environments 
-are used for different rules, which requires access to conda. 
+Also note, that the flag --use-conda is neccessary because
+different Snakemake rules use different environments, which requires access to conda. 
 
 """
 

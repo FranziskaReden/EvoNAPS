@@ -165,7 +165,7 @@ def get_alignment_taxonomy(ali_id:str, seq_type:str, db_config:dict, file:str) -
     Description
     ----------
     Function to retrieve the taxon IDs of an alignemnt from the EvoNAPS database.
-    The taxon ID and rank of last common ancestor (LCA) of the sequences is caculated.
+    The taxon ID and rank of last common ancestor (LCA) of the sequences is calculated.
     """
 
     # Read in taxonomy table from JSON file.
