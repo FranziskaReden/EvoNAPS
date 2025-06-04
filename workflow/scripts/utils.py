@@ -179,7 +179,7 @@ def check_each_sequence(data:Data, results:Results, j:int) -> None:
                     # Set taxon ID for sequence
                     if pd.isna(data.tax_file.at[row[0], 'TAX_ID']):
                         results.seq_para.at[index, 'TAX_ID'] = int(data.tax_file.at[row[0], 'TAX_ID'])
-                        # If TAX_CHECK and/or ACC_NR is non-empty, set it to corresponding number, 3 or None otherwise.
+                        # If TAX_CHECK is non-empty, set it to corresponding number, or 3 otherwise.
                         if pd.isna(data.tax_file.at[row[0], 'TAX_CHECK']):
                             results.seq_para.at[index, 'TAX_CHECK'] = 3
                         else:
@@ -187,7 +187,7 @@ def check_each_sequence(data:Data, results:Results, j:int) -> None:
                     else: 
                         results.seq_para.at[index, 'TAX_ID'] = int(1)
                         results.seq_para.at[index, 'TAX_CHECK'] = int(0)
-                    
+                    # If TAX_CHECK is non-empty, set it accordingly.
                     if not pd.isna(data.tax_file.at[row[0], 'ACC_NR']):
                         results.seq_para.at[index, 'TAX_CHECK'] = data.tax_file.at[row[0], 'ACC_NR']
             else: 
