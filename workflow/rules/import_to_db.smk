@@ -6,7 +6,7 @@ rule import_to_db:
         model_file = "{ali_id}_model_parameters.tsv",
         branch_file = "{ali_id}_branch_parameters.tsv",
         tree_file = "{ali_id}_tree_parameters.tsv",
-        pythia_file = "{ali_id}.pythia",
+        pythia_file = "{ali_id}.pythia.csv",
         credentials = "config/EvoNAPS_credentials.cnf",
         import_commands = "config/EvoNAPS_import_statements.sql",
         tables = "config/taxonomy_table.json"
@@ -20,18 +20,16 @@ rule import_to_db:
         else
             info_file="{input.prefix}.info"
         fi;
-
-        pythia_score=$(less {input.pythia_file})
         
         if [ -f $info_file ]; then
             python workflow/scripts/import_to_db.py \
             -p {input.prefix} -db {input.credentials} -t {input.tables} \
             -c {input.import_commands} -i {input.prefix}.info \
-            -py $pythia_score -q
+            -py {input.pythia_file}
         else
             python workflow/scripts/import_to_db.py \
             -p {input.prefix} -db {input.credentials} -t {input.tables} \
             -c {input.import_commands} \
-            -py $pythia_score -q
+            -py {input.pythia_file}
         fi;
         """

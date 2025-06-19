@@ -28,6 +28,7 @@ def main():
     parser.add_argument('-t', '--tax', 
                         type=pathlib.Path, 
                         action='store',
+                        default=None,
                         help='Provide csv file with taxon IDs for the names in the alignment file. \
                         The taxon file should include the name EXACTLY as it apears in the alignemnt file \
                         in column 1 and its corresponding taxon ID in column 2. Column three should state \
@@ -63,7 +64,7 @@ def main():
     # Initialize all objects to store data and results.
     constants = ConstantVariabels(args.config)
     results = Results(args.prefix, args.output, args.config, quiet=args.quiet)
-    data = Data(args.prefix, args.quiet, args.ali_file)
+    data = Data(args.prefix, args.quiet, args.ali_file, args.tax)
 
     # Don't mess with the order of things! 
     # Each steps filters out info that will be needed later!

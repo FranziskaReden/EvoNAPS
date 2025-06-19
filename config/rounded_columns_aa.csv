@@ -5,7 +5,12 @@ ali_para,DIST_MAX,7
 ali_para,DIST_MEAN,7
 ali_para,DIST_MEDIAN,7
 ali_para,DIST_VAR,7
-ali_para,PYTHIA_SCORE,9
+ali_para,PYTHIA_SCORE,15
+ali_para,ENTROPY,9
+ali_para,BOLLBACK,9
+ali_para,PATTERN_ENTROPY,9
+ali_para,AVG_RFDIST_PARSIMONY,9
+ali_para,UNIQUE_TOPOS_PARSIMONY,9
 branch_para,BL,10
 branch_para,1_MIN_PATH,10
 branch_para,1_MAX_PATH,10

@@ -177,7 +177,7 @@ def check_each_sequence(data:Data, results:Results, j:int) -> None:
                 # If there is a hit, add info to DataFrame
                 if len(row) >= 1:
                     # Set taxon ID for sequence
-                    if pd.isna(data.tax_file.at[row[0], 'TAX_ID']):
+                    if not pd.isna(data.tax_file.at[row[0], 'TAX_ID']):
                         results.seq_para.at[index, 'TAX_ID'] = int(data.tax_file.at[row[0], 'TAX_ID'])
                         # If TAX_CHECK is non-empty, set it to corresponding number, or 3 otherwise.
                         if pd.isna(data.tax_file.at[row[0], 'TAX_CHECK']):
@@ -189,7 +189,7 @@ def check_each_sequence(data:Data, results:Results, j:int) -> None:
                         results.seq_para.at[index, 'TAX_CHECK'] = int(0)
                     # If TAX_CHECK is non-empty, set it accordingly.
                     if not pd.isna(data.tax_file.at[row[0], 'ACC_NR']):
-                        results.seq_para.at[index, 'TAX_CHECK'] = data.tax_file.at[row[0], 'ACC_NR']
+                        results.seq_para.at[index, 'ACC_NR'] = data.tax_file.at[row[0], 'ACC_NR']
             else: 
                 results.seq_para.at[index, 'TAX_ID'] = int(1)
                 results.seq_para.at[index, 'TAX_CHECK'] = int(0)
@@ -211,7 +211,7 @@ def parse_ali_parameters_log(data:Data, results:Results) -> tuple[int, int]:
     # Update seq_para DataFrame with features regarding the character composition of each sequence.
     # Also update seq_para with the taxonomy IDs (if available)
     # Get sub-df of the taxonomy file, which only contains the sequences of the relevent alignment (ALI_ID)
-    if data.tax_file and 'ALI_ID' in data.tax_file.columns: 
+    if data.tax_file is not None and 'ALI_ID' in data.tax_file.columns: 
         data.tax_file = data.tax_file[data.tax_file['ALI_ID'] == results.constant_stats['ALI_ID'].replace('.fasta', '')]
 
     for i in range (len(data.log)): 

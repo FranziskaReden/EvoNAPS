@@ -131,15 +131,16 @@ def create_query(tax_dict:dict, seq_type:str) -> tuple[str, str]:
     values = []
     
     for key, item in tax_dict.items():
-        column_string += f"{key}, "
-        value_string += f"%s, "
-        values.append(item)
+        if item is not None:
+            column_string += f"{key}, "
+            value_string += f"%s, "
+            values.append(str(item))
 
     column_string = column_string[:-2]+')'
     value_string = value_string[:-2]+')'
 
     insert_query = f"INSERT IGNORE INTO {seq_type.lower()}_alignments_taxonomy {column_string} VALUES {value_string};"
-
+    
     return insert_query, tuple(values)
 
 def get_alignment_taxonomy(ali_id:str, seq_type:str, db_config:dict, file:str) -> tuple[str, tuple]:

@@ -20,16 +20,25 @@ class Data:
         self.log_file = f'{output}_import.log'
         self.target_file = f'{output}_summary.txt'
         self.quiet = quiet
-        self.pythia = pythia
-        self.tables = tables
+        self.tables = tables          
 
         self.read_db_credentials(credentials)
         self.read_import_commands(import_commands)
         self.info = self.read_info_file(info) if info else {}
+        self.pythia = self.read_pythia(pythia) if pythia else None
         self.check_files()
         self.check_ali_type()
 
         self.cleanup_ali = f"DELETE FROM {self.seq_type.lower()}_alignments WHERE ALI_ID='{self.ali_id}'"
+
+    def read_pythia(self, file_name:pathlib.Path) -> pd.DataFrame:
+        '''Reads in Pythia results csv file and stores it as a pandas DataFrame.'''
+        if path.exists(file_name):
+            df = pd.read_csv(file_name, sep=',')
+        else:
+            print(f'ERROR: Could not find pythia file: {file_name}!')
+            sys.exit(2)
+        return df
 
     def read_import_commands(self, file:pathlib.Path):
         '''Reads in the import commands file and stores the commands in a dictionary.'''
@@ -182,7 +191,7 @@ def run_query(data:Data, query, params, cleanup = False) -> int:
         logging.error(log_msg)
         print(log_msg)
         if cleanup is True:
-            _ = run_query(data, data.cleanup_ali, cleanup = False)
+            _ = run_query(data, data.cleanup_ali, None, cleanup = False)
             with open(data.target_file, 'a') as w:
                 w.write(f'WARNING: Alignment with ALI_ID {data.ali_id} was removed from database!')   
         sys.exit(2)
@@ -198,8 +207,6 @@ def run_query(data:Data, query, params, cleanup = False) -> int:
 
 def import_data(data:Data) -> int:
     '''Function to import the new alignment into the EvoNAPS database.'''
-
-    print(data.ali_id)
 
     for key, file in data.file_dict.items():
         table = f'{data.seq_type.lower()}_{key}'
@@ -243,9 +250,17 @@ def update_data(data:Data) -> None:
     '''Function to update the EvoNAPS database with additional information for the target alignment.'''
 
     # Update alignments table with Pythia score, delete alignment if not possible.
-    if data.pythia:
-        query = f"UPDATE {data.seq_type.lower()}_alignments SET PYTHIA_SCORE=%s where ALI_ID=%s;"
-        params = (data.pythia, data.ali_id)
+    if data.pythia is not None:
+        query = f"UPDATE {data.seq_type.lower()}_alignments SET \
+ENTROPY=%s, BOLLBACK=%s, PATTERN_ENTROPY=%s, AVG_RFDIST_PARSIMONY=%s, UNIQUE_TOPOS_PARSIMONY=%s, PYTHIA_SCORE=%s \
+where ALI_ID=%s;"
+        params = (str(round(data.pythia.at[0, 'entropy'],9)), 
+                  str(round(data.pythia.at[0, 'bollback'],9)), 
+                  str(round(data.pythia.at[0, 'pattern_entropy'],9)), 
+                  str(round(data.pythia.at[0, 'avg_rfdist_parsimony'],9)),
+                  str(round(data.pythia.at[0, 'proportion_unique_topos_parsimony'],9)), 
+                  str(round(data.pythia.at[0, 'difficulty'], 15)),
+                  data.ali_id)
         message = f'Updating {data.seq_type.lower()}_alignments with Pythia score...'
         
         qprint(message, quiet=data.quiet)
@@ -358,10 +373,10 @@ def main():
                         help='Quiet mode will print minimal information.')
     
     parser.add_argument('-py', '--pythia',
-                        type=str,
+                        type=pathlib.Path,
                         action='store',
                         default=None,
-                        help='Option to provide the Pythia difficulty score for the alignment.')
+                        help='Option to provide the file containing the Pythia difficulty score for the alignment.')
     
     args = parser.parse_args()
 

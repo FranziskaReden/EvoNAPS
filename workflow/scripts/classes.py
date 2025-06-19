@@ -126,6 +126,7 @@ class Results:
 
             self.seq_para = pd.DataFrame(columns = ['ALI_ID', 'SEQ_INDEX', 'SEQ_NAME', 'TAX_ID', 'TAX_CHECK', 'ACC_NR','FRAC_WILDCARDS_GAPS', \
                                                     'CHI2_P_VALUE', 'CHI2_PASSED', 'EXCLUDED', 'IDENTICAL_TO', 'FREQ_A', 'FREQ_C', 'FREQ_G', 'FREQ_T', 'SEQ'])
+            self.seq_para['ACC_NR'] = self.seq_para['ACC_NR'].astype(str)
 
             self.ali_para = pd.DataFrame(columns = ['ALI_ID', 'IQTREE_VERSION', 'RANDOM_SEED', 'TIME_STAMP', 'SEQ_TYPE',\
                                                     'TAXA', 'SITES', 'PARSIMONY_INFORMATIVE_SITES', \
@@ -163,6 +164,7 @@ class Results:
                 'CHI2_PASSED', 'EXCLUDED', 'IDENTICAL_TO', 'FREQ_A', 'FREQ_R','FREQ_N',\
                 'FREQ_D','FREQ_C','FREQ_Q','FREQ_E','FREQ_G','FREQ_H','FREQ_I','FREQ_L','FREQ_K','FREQ_M','FREQ_F',\
                     'FREQ_P','FREQ_S','FREQ_T','FREQ_W', 'FREQ_Y', 'FREQ_V', 'SEQ'])
+            self.seq_para['ACC_NR'] = self.seq_para['ACC_NR'].astype(str)
 
             self.ali_para = pd.DataFrame(columns = ['ALI_ID', 'IQTREE_VERSION', 'RANDOM_SEED', 'TIME_STAMP', 'SEQ_TYPE', \
                                                     'TAXA', 'SITES', 'PARSIMONY_INFORMATIVE_SITES', \
@@ -292,7 +294,6 @@ class Data:
     - log_keep: IQTree log output of the alignment with keep-ident
     - mldist_keep: IQTree model distance output of the alignment with keep-ident
     - check_keep: IQTree model check output of the alignment with keep-ident
-    that are to be filled with the results of the workflow.
     """
 
     def __init__(self, prefix, quiet = False, ali_file = None, tax_file = None):
@@ -401,7 +402,7 @@ class Data:
             with gzip.open(self.prefix+'-keep_ident.model.gz') as t:
                 self.check_keep = [x.decode('utf8').strip() for x in t.readlines()]
         
-        if self.tax_file:
+        if self.tax_file is not None:
             self.tax_file = pd.read_csv(self.tax_file, encoding='utf-8', usecols=[0,1,2,3], \
                                     comment="#", header=None, names=['SEQ_NAME', 'TAX_ID', 'TAX_CHECK', 'ACC_NR'])
 

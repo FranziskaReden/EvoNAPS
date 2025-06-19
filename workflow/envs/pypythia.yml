@@ -3,4 +3,5 @@ channels:
   - conda-forge
   - nodefaults
 dependencies:
-  - pypythia=1.1.4
+  - python=3.12
+  - pythiaphylopredictor

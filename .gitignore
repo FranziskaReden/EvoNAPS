@@ -6,6 +6,9 @@ database/scripts
 test
 *.ipynb
 data
+database/*.html
+database/evonaps_alignments.py
+database/import_new_tax_ids.py
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

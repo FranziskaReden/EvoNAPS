@@ -43,11 +43,11 @@ rule parse_parameters:
         if [ -f {input.seq}.tax ]; then 
             python workflow/scripts/parse_parameters.py \
             -p {input.seq} -o {input.seq} \
-            -t {input.seq}.tax -c config/ -q
+            -t {input.seq}.tax -c config/
         elif [ -f config/tax_ids.tax ]; then 
             python workflow/scripts/parse_parameters.py \
             -p {input.seq} -o {input.seq} \
-            -t config/tax_ids.tax -c config/ -q
+            -t config/tax_ids.tax -c config/
         else
             python workflow/scripts/parse_parameters.py \
             -p {input.seq} -o {input.seq} \
@@ -57,10 +57,10 @@ rule parse_parameters:
 
 rule calculate_pythia_score:
     output:
-        "{ali_id}.pythia"
+        "{ali_id}.pythia.csv"
     input:
         seq = "{ali_id}"
     conda: "../envs/pypythia.yml"
     shell: """
-        pythia -m {input.seq} -r workflow/bin/raxml-ng -o {input.seq}.pythia --removeDuplicates -q
+        pythia -m {input.seq} -r workflow/bin/raxml-ng --prefix {input.seq} --forceDuplicates > {input.seq}.pythia.ter.log 2>&1
         """
